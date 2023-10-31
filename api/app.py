@@ -13,7 +13,7 @@ def parse_auth():
 
 @app.route('/')
 def index():
-    return a.return_fair_nodes(county="Allegheny", state="Pennsylvania", pretty=False)
+    return 'Hi!'
 
 # @app.route('/finalists_fairs/<fair_name>/')
 def getFinalistsByFair(fair_name):
@@ -75,6 +75,6 @@ def getFairListByCountyAndState(county, state):
 
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True, port="8080")
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', debug=True, port="8080")
  
