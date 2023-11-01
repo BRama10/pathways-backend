@@ -55,7 +55,7 @@ class FairNode:
 ISEFnode = FairNode(None, 'ISEF', 'ISEF')
 
 class Analysis:
-  def __init__(self, filepath: str ='https://github.com/BRama10/pathways-backend/blob/main/api/full_data_exec_preds_1.csv') -> None:
+  def __init__(self, filepath: str ='https://drive.google.com/file/d/1_h0lGE09Z3CEDUKLQ4xt_93jqz7yyYsG/view?usp=sharing') -> None:
     self.df = pd.read_csv(filepath)
 
 
