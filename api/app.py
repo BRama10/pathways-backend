@@ -9,10 +9,10 @@ from typing import Union, List, Dict, Any, Optional
 import pandas as pd
 import numpy as np
 import ast
-
 from os.path import dirname, abspath, join
+
 dir = dirname(abspath(__file__))
-print(dir)
+
 
 class FairNode:
   tree_list = []
@@ -55,7 +55,7 @@ class FairNode:
 ISEFnode = FairNode(None, 'ISEF', 'ISEF')
 
 class Analysis:
-  def __init__(self, filepath: str ='https://drive.google.com/file/d/1_h0lGE09Z3CEDUKLQ4xt_93jqz7yyYsG/view?usp=sharing') -> None:
+  def __init__(self, filepath: str =dir+'/full_data_exec_preds_1.csv') -> None:
     self.df = pd.read_csv(filepath)
 
 
@@ -204,6 +204,6 @@ def getFairListByCountyAndState(county, state):
 
 
 
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', debug=True, port="8080")
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=True, port="8080")
  
