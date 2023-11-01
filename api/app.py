@@ -10,6 +10,10 @@ import pandas as pd
 import numpy as np
 import ast
 
+from os.path import dirname, abspath, join
+dir = dirname(abspath(__file__))
+print(dir)
+
 class FairNode:
   tree_list = []
 
