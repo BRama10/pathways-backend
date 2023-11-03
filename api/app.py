@@ -238,7 +238,6 @@ def getFairListByCountyAndState(county, state):
         return_values.append(
             {
                 'name': state.at[state.index[0], 'Fair Name'],
-                
                 'code': state.at[state.index[0], 'Fair Code'],
                 'contact_name': state.at[state.index[0], 'Contact Person'],
                 'email': state.at[state.index[0], 'Contact Email'],
@@ -250,7 +249,9 @@ def getFairListByCountyAndState(county, state):
         for key, value in item.items():
             if not isinstance(value, str):
                 item[key] = 'None'
-                
+    
+    print(return_values)
+
     cat_counts = get_category_counts(df_isef, 2023, return_values[0]['name'])
 
     return json.dumps({
