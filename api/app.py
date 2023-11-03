@@ -204,6 +204,7 @@ def getDiffByFair(fair_name):
 
 @app.route('/get_fair_list/<county>/<state>/')
 def getFairListByCountyAndState(county, state):
+    print(state)
     target = None
 
     for x in a.return_fair_nodes(county=county, state=state, pretty=False):
@@ -237,12 +238,19 @@ def getFairListByCountyAndState(county, state):
         return_values.append(
             {
                 'name': state.at[state.index[0], 'Fair Name'],
+                
                 'code': state.at[state.index[0], 'Fair Code'],
                 'contact_name': state.at[state.index[0], 'Contact Person'],
                 'email': state.at[state.index[0], 'Contact Email'],
                 'website': regional.at[regional.index[0], 'Fair Link'],
             }
         )
+
+    for item in return_values:
+        for key, value in item.items():
+            if not isinstance(value, str):
+                item[key] = 'None'
+                
     cat_counts = get_category_counts(df_isef, 2023, return_values[0]['name'])
 
     return json.dumps({
