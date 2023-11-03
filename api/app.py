@@ -139,7 +139,6 @@ class Analysis:
         if res.empty:
             return None
         return res.loc[:, 'scaled_diff_2014':]
-df_isef= pd.read_csv(dir+'/isef_database_cleaned.csv')
 
 def get_category_counts(df, year, fair):
     # Filter the DataFrame based on year and fair
@@ -168,6 +167,9 @@ def get_category_counts(df, year, fair):
         category_counts.setdefault(category, 0)
 
     return category_counts
+
+df_isef= pd.read_csv(dir+'/isef_database_cleaned.csv')
+print('d')
 
 app = Flask(__name__)
 CORS(app)
