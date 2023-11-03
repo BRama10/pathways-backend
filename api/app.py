@@ -139,7 +139,35 @@ class Analysis:
         if res.empty:
             return None
         return res.loc[:, 'scaled_diff_2014':]
+df_isef= pd.read_csv(dir+'/.csv')
 
+def get_category_counts(df, year, fair):
+    # Filter the DataFrame based on year and fair
+    filtered_df = df[(df['year'] == year) & (df['fair'] == fair)]
+
+    # Count the occurrences of each category and convert to a dictionary
+    category_counts = filtered_df['category'].value_counts().to_dict()
+
+    # If a category is missing, add it to the dictionary with a count of 0
+    all_categories = [
+        'Earth and Environmental Sciences', 'Robotics and Intelligent Machines', 'Environmental Engineering',
+        'Biochemistry', 'Systems Software', 'Embedded Systems',
+        'Computational Biology and Bioinformatics',
+        'Behavioral and Social Sciences', 'Biomedical Engineering',
+        'Materials Science', 'Plant Sciences',
+        'Biomedical and Health Sciences', 'Animal Sciences',
+        'Engineering Technology: Statics & Dynamics', 'Chemistry',
+        'Microbiology', 'Cellular and Molecular Biology',
+        'Energy: Sustainable Materials and Design',
+        'Translational Medical Science', 'Mathematics',
+        'Physics and Astronomy', 'Engineering Mechanics',
+        'Energy: Chemical', 'Energy: Physical', 'No Category'
+    ]
+
+    for category in all_categories:
+        category_counts.setdefault(category, 0)
+
+    return category_counts
 
 app = Flask(__name__)
 CORS(app)
@@ -213,11 +241,14 @@ def getFairListByCountyAndState(county, state):
                 'website': regional.at[regional.index[0], 'Fair Link'],
             }
         )
+    cat_counts = get_category_counts(df_isef, 2023, return_values[0]['name'])
 
     return json.dumps({
         'fair_data': return_values,
         'diff': getDiffByFair(return_values[0]['code']),
-        'num_finalists': getFinalistsByFair(return_values[0]['code'])
+        'num_finalists': getFinalistsByFair(return_values[0]['code']),
+        'sectors' : list(cat_counts.keys()),
+        'breakdown' : list(cat_counts.values())
     })
 
 
