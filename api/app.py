@@ -169,7 +169,6 @@ def get_category_counts(df, year, fair):
     return category_counts
 
 df_isef= pd.read_csv(dir+'/isef_database_cleaned.csv')
-print('d')
 
 app = Flask(__name__)
 CORS(app)
@@ -203,10 +202,10 @@ def getDiffByFair(fair_name):
 
 
 @app.route('/get_fair_list/<county>/<state>/')
-def getFairListByCountyAndState(county, state):
-    target = None
-    print(state=='North Carolina')
-
+def getFairListByCountyAndState(county: str, state: str):
+    county, state = county.replace('+', ' '), state.replace('+', ' ')
+    county, state = county.title(), state.title()
+    print(county, state)
     for x in a.return_fair_nodes(county=county, state=state, pretty=False):
         try:
             if len(x[0]) == 3:
