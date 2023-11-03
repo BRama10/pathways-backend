@@ -247,7 +247,7 @@ def getFairListByCountyAndState(county: str, state: str):
     for item in return_values:
         for key, value in item.items():
             if not isinstance(value, str):
-                item[key] = 'None'
+                item[key] = 'N/A'
     
     print(return_values)
 
