@@ -139,7 +139,7 @@ class Analysis:
         if res.empty:
             return None
         return res.loc[:, 'scaled_diff_2014':]
-df_isef= pd.read_csv(dir+'/.csv')
+df_isef= pd.read_csv(dir+'/isef_database_cleaned.csv')
 
 def get_category_counts(df, year, fair):
     # Filter the DataFrame based on year and fair
