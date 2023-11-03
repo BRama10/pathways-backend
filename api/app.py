@@ -204,8 +204,8 @@ def getDiffByFair(fair_name):
 
 @app.route('/get_fair_list/<county>/<state>/')
 def getFairListByCountyAndState(county, state):
-    print(state)
     target = None
+    print(state=='North Carolina')
 
     for x in a.return_fair_nodes(county=county, state=state, pretty=False):
         try:
