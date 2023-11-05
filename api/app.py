@@ -261,22 +261,22 @@ def getFairListByCountyAndState(county: str, state: str):
             )
 
     
-        state_codes = [r.get(1) for i, r in a.df[a.df['State'] == regional.at[regional.index[0], 'State']].iterrows()]
-        cat_counts = get_category_counts(df_isef, 2023,[r.get(3) for i, r in a.df[a.df['State'] == regional.at[regional.index[0], 'State']].iterrows()])
+            state_codes = [r.get(1) for i, r in a.df[a.df['State'] == regional.at[regional.index[0], 'State']].iterrows()]
+            cat_counts = get_category_counts(df_isef, 2023,[r.get(3) for i, r in a.df[a.df['State'] == regional.at[regional.index[0], 'State']].iterrows()])
             
-        response_data.append({
-            'fair_data' : return_values,
-            'overall_finalists' : sum([getFinalistsByFair(sc) for sc in state_codes]),
-            'overall_diff' : np.mean([getDiffByFair(sc) for sc in state_codes]),
-            'overall_pred_diff' : np.mean([getDiffByFair(sc, pred=True) for sc in state_codes]),
-            'overall_sectors' : list(cat_counts.keys()),
-            'overall_breakdown' : list(cat_counts.values()),
-        })
-    else:
-        response_data.append({
-            'fair_data' : return_values,
-            'flag' : True
-        })
+            response_data.append({
+                'fair_data' : return_values,
+                'overall_finalists' : sum([getFinalistsByFair(sc) for sc in state_codes]),
+                'overall_diff' : np.mean([getDiffByFair(sc) for sc in state_codes]),
+                'overall_pred_diff' : np.mean([getDiffByFair(sc, pred=True) for sc in state_codes]),
+                'overall_sectors' : list(cat_counts.keys()),
+                'overall_breakdown' : list(cat_counts.values()),
+            })
+        else:
+            response_data.append({
+                'fair_data' : return_values,
+                'flag' : True
+            })
     
     return json.dumps(response_data)
 
