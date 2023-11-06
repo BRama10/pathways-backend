@@ -275,7 +275,11 @@ def getFairListByCountyAndState(county: str, state: str):
         else:
             response_data.append({
                 'fair_data' : return_values,
-                'flag' : True
+                'overall_finalists' : return_values[0]['num_finalists'],
+                'overall_diff' : return_values[0]['diff'],
+                'overall_pred_diff' : return_values[0]['pred_diff'],
+                'overall_sectors' : return_values[0]['sectors'],
+                'overall_breakdown' : return_values[0]['breakdown'],
             })
     
     return json.dumps(response_data)
