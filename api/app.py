@@ -267,8 +267,8 @@ def getFairListByCountyAndState(county: str, state: str):
             response_data.append({
                 'fair_data' : return_values,
                 'overall_finalists' : sum([getFinalistsByFair(sc) for sc in state_codes]),
-                'overall_diff' : np.mean([getDiffByFair(sc) for sc in state_codes]),
-                'overall_pred_diff' : np.mean([getDiffByFair(sc, pred=True) for sc in state_codes]),
+                'overall_diff' : round(np.mean([getDiffByFair(sc) for sc in state_codes]),1),
+                'overall_pred_diff' : round(np.mean([getDiffByFair(sc, pred=True) for sc in state_codes]),1),
                 'overall_sectors' : list(cat_counts.keys()),
                 'overall_breakdown' : list(cat_counts.values()),
             })
