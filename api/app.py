@@ -188,8 +188,19 @@ def index():
 
 @app.route('/get_county_names')
 def getCountyList():
-    county_data = pd.read_csv(dir+'/population_metric.csv')
-    return json.dumps(list(county_data['Unnamed: 0'].unique()))
+    county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
+    # return json.dumps(list(county_data['Unnamed: 0'].unique()))
+
+    for item in list(county_data['Unnamed: 0'].unique()):
+        county, state = item.split(", ")
+        state = state.strip()
+
+        if state not in county_dict:
+            county_dict[state] = []
+
+        county_dict[state].append(county)
+
+    return json.dumps(county_dict)
 # @app.route('/finalists_fairs/<fair_name>/')
 
 
