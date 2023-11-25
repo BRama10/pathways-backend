@@ -10,6 +10,10 @@ import pandas as pd
 import numpy as np
 import ast
 from os.path import dirname, abspath, join
+import pickle
+
+
+
 
 dir = dirname(abspath(__file__))
 
@@ -172,20 +176,20 @@ def get_category_counts(df, year, fairs):
 
 df_isef = pd.read_csv(dir+'/isef_database_cleaned.csv')
 
-def isExisting(string):
-        try:
-            c, s = map(str.strip, string.split(','))
-            var = a.return_fair_nodes(c, s)
-            return bool(var)
-        except Exception as e:
-            # print(f"Error processing {string}: {str(e)}")
-            return False
+# def isExisting(string):
+#         try:
+#             c, s = map(str.strip, string.split(','))
+#             var = a.return_fair_nodes(c, s)
+#             return bool(var)
+#         except Exception as e:
+#             # print(f"Error processing {string}: {str(e)}")
+#             return False
 
 a = Analysis()
 
-county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
-county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
-print(county_data)
+# county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
+# county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
+# print(county_data)
 
 app = Flask(__name__)
 CORS(app, origins="http://pathways-frontend.vercel.app", supports_credentials=True)
@@ -211,16 +215,19 @@ def getCountyList():
     # return json.dumps(list(county_data['Unnamed: 0'].unique()))
 
     # for item in list(county_data['Unnamed: 0'].unique()):
-    for item in county_data:
-        county, state = item.split(", ")
-        state = state.strip()
+    # for item in county_data:
+    #     county, state = item.split(", ")
+    #     state = state.strip()
 
-        if state not in county_dict:
-            county_dict[state] = []
+    #     if state not in county_dict:
+    #         county_dict[state] = []
 
-        county_dict[state].append(county)
+    #     county_dict[state].append(county)
 
-    return json.dumps(county_dict)
+    with open(f'{dir}/data.pkl', 'rb') as file:
+        loaded_data = pickle.load(file)
+
+    return json.dumps(loaded_data)
 # @app.route('/finalists_fairs/<fair_name>/')
 
 
