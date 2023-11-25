@@ -174,6 +174,7 @@ df_isef = pd.read_csv(dir+'/isef_database_cleaned.csv')
 
 app = Flask(__name__)
 CORS(app)
+
 a = Analysis()
 
 
