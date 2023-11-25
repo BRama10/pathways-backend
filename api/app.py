@@ -93,7 +93,7 @@ class Analysis:
 
     def return_info(self, fair: str) -> Optional[Dict[str, Any]]:
         res = self.df[self.df['Fair Code'] == fair] if len(
-            fair) in [5, 6] else self.df[self.df['Fair Name'] == fair]
+            fair) in [5, 6, 7] else self.df[self.df['Fair Name'] == fair]
 
         if res.empty:
             return None
@@ -105,7 +105,7 @@ class Analysis:
 
         for fair in fairs:
             row = self.df[self.df['Fair Code'] == fair] if len(
-                fair) in [5, 6] else self.df[self.df['Fair Name'] == fair]
+                fair) in [5, 6, 7] else self.df[self.df['Fair Name'] == fair]
 
             if row.empty:
                 return None
@@ -131,10 +131,10 @@ class Analysis:
     def fair_difficulty(self, fairs: Union[str, List[str]]) -> Optional[Union[float, List[float]]]:
         if isinstance(fairs, str):
             res = self.df[self.df['Fair Code'] == fairs] if len(
-                fairs) in [5, 6] else self.df[self.df['Fair Name'] == fairs]
+                fairs) in [5, 6, 7] else self.df[self.df['Fair Name'] == fairs]
         else:
             res = self.df[self.df['Fair Code'].isin(fairs)] if len(
-                fairs) in [5, 6] else self.df[self.df['Fair Name'].isin(fairs)]
+                fairs) in [5, 6, 7] else self.df[self.df['Fair Name'].isin(fairs)]
 
         if res.empty:
             return None
@@ -205,6 +205,8 @@ def getCountyList():
 
 
 def getFinalistsByFair(fair_name):
+    print('cow')
+    print(a.return_info(fair_name).to_dict().get('data_2023'))
     return int(eval(list(a.return_info(fair_name).to_dict().get('data_2023').values())[0])[2])
 
 
