@@ -178,16 +178,19 @@ def isExisting(string):
             var = a.return_fair_nodes(c, s)
             return bool(var)
         except Exception as e:
-            print(f"Error processing {string}: {str(e)}")
+            # print(f"Error processing {string}: {str(e)}")
             return False
+
+a = Analysis()
 
 county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
 county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
+print(county_data)
 
 app = Flask(__name__)
 CORS(app)
 
-a = Analysis()
+
 
 
 def parse_auth():
