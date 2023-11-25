@@ -173,8 +173,7 @@ def get_category_counts(df, year, fairs):
 df_isef = pd.read_csv(dir+'/isef_database_cleaned.csv')
 
 app = Flask(__name__)
-CORS(app, resources={r"/get_county_names": {"origins": "https://pathways-frontend.vercel.app"}})
-
+CORS(app)
 
 a = Analysis()
 
@@ -197,18 +196,13 @@ def getCountyList():
 
     def isExisting(string):
         try:
-            c, s = string.split(',')
-            c, s = c.strip(), s.strip()
-        except:
-            print(string)
-
-        try: 
+            c, s = map(str.strip, string.split(','))
             var = a.return_fair_nodes(c, s)
-            if var == []:
-                return False
-            return True
-        except:
+            return bool(var)
+        except Exception as e:
+            print(f"Error processing {string}: {str(e)}")
             return False
+
     county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
     county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
     # return json.dumps(list(county_data['Unnamed: 0'].unique()))
