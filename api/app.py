@@ -173,7 +173,8 @@ def get_category_counts(df, year, fairs):
 df_isef = pd.read_csv(dir+'/isef_database_cleaned.csv')
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/get_county_names": {"origins": "https://pathways-frontend.vercel.app"}})
+
 
 a = Analysis()
 
