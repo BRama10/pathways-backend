@@ -185,10 +185,25 @@ def parse_auth():
 def index():
     return 'Hi!'
 
+def isExisting(string):
+    c, s = string.split(',')
+    c, s = c.strip(), s.strip()
+
+    try: 
+        var = a.return_fair_nodes(c, s)
+        if var == []:
+            return False
+        return True
+    except:
+        return False
+
+print(isExisting('Fairfax County, Virginia'))
+print(isExisting('Cow, Texas'))
 
 @app.route('/get_county_names')
 def getCountyList():
     county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
+    county_data = list(filter(county_data, isExisting))
     # return json.dumps(list(county_data['Unnamed: 0'].unique()))
 
     for item in list(county_data['Unnamed: 0'].unique()):
