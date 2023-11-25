@@ -202,8 +202,8 @@ def isExisting(string):
     
     return False
 
-print(isExisting('Fairfax County, Virginia'))
-print(isExisting('Cow, Texas'))
+# print(isExisting('Fairfax County, Virginia'))
+# print(isExisting('Cow, Texas'))
 
 @app.route('/get_county_names')
 def getCountyList():
