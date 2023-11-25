@@ -185,22 +185,22 @@ def parse_auth():
 def index():
     return 'Hi!'
 
-def isExisting(string):
-    try:
-        c, s = string.split(',')
-        c, s = c.strip(), s.strip()
-    except:
-        print(string)
+# def isExisting(string):
+#     try:
+#         c, s = string.split(',')
+#         c, s = c.strip(), s.strip()
+#     except:
+#         print(string)
 
-    try: 
-        var = a.return_fair_nodes(c, s)
-        if var == []:
-            return False
-        return True
-    except:
-        return False
+#     try: 
+#         var = a.return_fair_nodes(c, s)
+#         if var == []:
+#             return False
+#         return True
+#     except:
+#         return False
     
-    return False
+#     return False
 
 # print(isExisting('Fairfax County, Virginia'))
 # print(isExisting('Cow, Texas'))
@@ -208,11 +208,11 @@ def isExisting(string):
 @app.route('/get_county_names')
 def getCountyList():
     county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
-    county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
+    # county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
     # return json.dumps(list(county_data['Unnamed: 0'].unique()))
 
-    # for item in list(county_data['Unnamed: 0'].unique()):
-    for item in county_data:
+    for item in list(county_data['Unnamed: 0'].unique()):
+    # for item in county_data:
         county, state = item.split(", ")
         state = state.strip()
 
