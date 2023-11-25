@@ -188,7 +188,7 @@ county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
 print(county_data)
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins="http://pathways-frontend.vercel.app", supports_credentials=True)
 
 
 
