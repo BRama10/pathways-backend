@@ -202,8 +202,8 @@ def isExisting(string):
 a = Analysis()
 
 # print(isExisting('Adams, Illinois'))
-county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
-county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
+# county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
+# county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
 # print(county_data)
 
 app = Flask(__name__)
@@ -230,19 +230,19 @@ def getCountyList():
     # return json.dumps(list(county_data['Unnamed: 0'].unique()))
 
     # for item in list(county_data['Unnamed: 0'].unique()):
-    for item in county_data:
-        county, state = item.split(", ")
-        state = state.strip()
+    # for item in county_data:
+    #     county, state = item.split(", ")
+    #     state = state.strip()
 
-        if state not in county_dict:
-            county_dict[state] = []
+    #     if state not in county_dict:
+    #         county_dict[state] = []
 
-        county_dict[state].append(county)
+    #     county_dict[state].append(county)
 #loaded_data = 
-    with open(f'{dir}/data.pkl', 'wb') as file:
-        pickle.dump(county_data, file)
-    return 'L'
-    # return json.dumps(loaded_data)
+    with open(f'{dir}/data.pkl', 'rb') as file:
+        loaded_data = pickle.load(file)
+    # return 'L'
+    return json.dumps(loaded_data)
 # @app.route('/finalists_fairs/<fair_name>/')
 
 
