@@ -314,7 +314,7 @@ def getFairListByCountyAndState(county: str, state: str):
                 'code': replace_nan(state.at[state.index[0], 'Fair Code']),
                 'contact_name': replace_nan(state.at[state.index[0], 'Contact Person']),
                 'email': replace_nan(state.at[state.index[0], 'Contact Email']),
-                'website': replace_nan(regional.at[regional.index[0], 'Fair Link']),
+                'website': replace_nan(state.at[state.index[0], 'Fair Link']),
                 'num_finalists': getFinalistsByFair(state.at[state.index[0], 'Fair Code']),
                 'diff': getDiffByFair(state.at[state.index[0], 'Fair Code']),
                 'pred_diff': getDiffByFair(state.at[state.index[0], 'Fair Code'], pred=True),
