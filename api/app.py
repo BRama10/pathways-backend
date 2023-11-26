@@ -238,11 +238,13 @@ def getCountyList():
     #         county_dict[state] = []
 
     #     county_dict[state].append(county)
-#loaded_data = 
+
+    # with open(f'{dir}/data.pkl', 'wb') as file:
+    #     pickle.dump(county_dict, file)
     with open(f'{dir}/data.pkl', 'rb') as file:
         loaded_data = pickle.load(file)
-    # return 'L'
     return json.dumps(loaded_data)
+    # return json.dumps(loaded_data)
 # @app.route('/finalists_fairs/<fair_name>/')
 
 
