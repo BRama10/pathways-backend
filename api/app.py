@@ -210,9 +210,9 @@ def isExisting(string):
 
 a = Analysis()
 
-print(isExisting('Dillingham Census Area, Alaska'))
-county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
-county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
+# print(isExisting('Dillingham Census Area, Alaska'))
+# county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
+# county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
 # print(county_data)
 
 app = Flask(__name__)
@@ -253,7 +253,7 @@ def getCountyList():
     with open(f'{dir}/data.pkl', 'rb') as file:
         loaded_data = pickle.load(file)
     return json.dumps(loaded_data)
-    # return json.dumps(loaded_data)
+    # return json.dumps('L')
 # @app.route('/finalists_fairs/<fair_name>/')
 
 
