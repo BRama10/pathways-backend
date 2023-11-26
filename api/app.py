@@ -232,8 +232,8 @@ def getCountyList():
 
 
 def getFinalistsByFair(fair_name):
-    print('cow')
-    print(a.return_info(fair_name).to_dict().get('data_2023'))
+    # print('cow')
+    # print(a.return_info(fair_name).to_dict().get('data_2023'))
     return int(eval(list(a.return_info(fair_name).to_dict().get('data_2023').values())[0])[2])
 
 
@@ -251,6 +251,7 @@ def replace_nan(data):
     var = data[0]['fair_data']
     for v in range(len(var)):
       for k, i in var[v].items():
+        print(i)
         if type(i) != list:
           if pd.isna(i):
             lst.append([v, k, i])
@@ -262,14 +263,25 @@ def replace_nan(data):
     return data
 
 
+
+def replace_nan(value, replacement="No Data"):
+    
+    if isinstance(value, list):
+        return [replace_nan(v) for v in value]
+    elif isinstance(value, dict):
+        return {k: replace_nan(v) for k, v in value.items()}
+    elif pd.isna(value):
+        return replacement
+    else:
+        return value
+    
 @app.route('/get_fair_list/<county>/<state>/')
 def getFairListByCountyAndState(county: str, state: str):
     county, state = county.replace('+', ' '), state.replace('+', ' ')
     county, state = county.title(), state.title()
     target = None
 
-    response_data =[]
-    print(a.return_fair_nodes(county=county, state=state))
+    response_data = []
 
     for branch in a.return_fair_nodes(county=county, state=state, pretty=False)[0]:
         return_values = []
@@ -277,67 +289,137 @@ def getFairListByCountyAndState(county: str, state: str):
 
         cat_counts = get_category_counts(df_isef, 2023, [regional.at[regional.index[0], 'Fair Name']])
 
-        return_values.append(
-            {
-                'type': 'regional',
-                'name': regional.at[regional.index[0], 'Fair Name'],
-                'code': regional.at[regional.index[0], 'Fair Code'],
-                'contact_name': regional.at[regional.index[0], 'Contact Person'],
-                'email': regional.at[regional.index[0], 'Contact Email'],
-                'website': regional.at[regional.index[0], 'Fair Link'],
-                'num_finalists': getFinalistsByFair(regional.at[regional.index[0], 'Fair Code']),
-                'diff': getDiffByFair(regional.at[regional.index[0], 'Fair Code']),
-                'pred_diff': getDiffByFair(regional.at[regional.index[0], 'Fair Code'], pred=True),
-                'sectors' : list(cat_counts.keys()),
-                'breakdown' : list(cat_counts.values())
-            }
-        )
+        return_values.append({
+            'type': 'regional',
+            'name': replace_nan(regional.at[regional.index[0], 'Fair Name']),
+            'code': replace_nan(regional.at[regional.index[0], 'Fair Code']),
+            'contact_name': replace_nan(regional.at[regional.index[0], 'Contact Person']),
+            'email': replace_nan(regional.at[regional.index[0], 'Contact Email']),
+            'website': replace_nan(regional.at[regional.index[0], 'Fair Link']),
+            'num_finalists': getFinalistsByFair(regional.at[regional.index[0], 'Fair Code']),
+            'diff': getDiffByFair(regional.at[regional.index[0], 'Fair Code']),
+            'pred_diff': getDiffByFair(regional.at[regional.index[0], 'Fair Code'], pred=True),
+            'sectors': replace_nan(list(cat_counts.keys())),
+            'breakdown': replace_nan(list(cat_counts.values()))
+        })
 
         if len(branch) == 3:
-            #regional, state, isef
             state = a.return_info(branch[1])
 
             cat_counts = get_category_counts(df_isef, 2023, [state.at[state.index[0], 'Fair Name']])
 
-            return_values.append(
-                {
-                    'type': 'state',
-                    'name': state.at[state.index[0], 'Fair Name'],
-                    'code': state.at[state.index[0], 'Fair Code'],
-                    'contact_name': state.at[state.index[0], 'Contact Person'],
-                    'email': state.at[state.index[0], 'Contact Email'],
-                    'website': regional.at[regional.index[0], 'Fair Link'],
-                    'num_finalists': getFinalistsByFair(state.at[state.index[0], 'Fair Code']),
-                    'diff': getDiffByFair(state.at[state.index[0], 'Fair Code']),
-                    'pred_diff': getDiffByFair(state.at[state.index[0], 'Fair Code'], pred=True),
-                    'sectors' : list(cat_counts.keys()),
-                    'breakdown' : list(cat_counts.values())
-                }
-            )
+            return_values.append({
+                'type': 'state',
+                'name': replace_nan(state.at[state.index[0], 'Fair Name']),
+                'code': replace_nan(state.at[state.index[0], 'Fair Code']),
+                'contact_name': replace_nan(state.at[state.index[0], 'Contact Person']),
+                'email': replace_nan(state.at[state.index[0], 'Contact Email']),
+                'website': replace_nan(regional.at[regional.index[0], 'Fair Link']),
+                'num_finalists': getFinalistsByFair(state.at[state.index[0], 'Fair Code']),
+                'diff': getDiffByFair(state.at[state.index[0], 'Fair Code']),
+                'pred_diff': getDiffByFair(state.at[state.index[0], 'Fair Code'], pred=True),
+                'sectors': replace_nan(list(cat_counts.keys())),
+                'breakdown': replace_nan(list(cat_counts.values()))
+            })
 
-    
             state_codes = [r.get(1) for i, r in a.df[a.df['State'] == regional.at[regional.index[0], 'State']].iterrows()]
-            cat_counts = get_category_counts(df_isef, 2023,[r.get(3) for i, r in a.df[a.df['State'] == regional.at[regional.index[0], 'State']].iterrows()])
-            
+            cat_counts = get_category_counts(df_isef, 2023, [r.get(3) for i, r in a.df[a.df['State'] == regional.at[regional.index[0], 'State']].iterrows()])
+
             response_data.append({
-                'fair_data' : return_values,
-                'overall_finalists' : sum([getFinalistsByFair(sc) for sc in state_codes]),
-                'overall_diff' : round(np.mean([getDiffByFair(sc) for sc in state_codes]),1),
-                'overall_pred_diff' : round(np.mean([getDiffByFair(sc, pred=True) for sc in state_codes]),1),
-                'overall_sectors' : list(cat_counts.keys()),
-                'overall_breakdown' : list(cat_counts.values()),
+                'fair_data': replace_nan(return_values),
+                'overall_finalists': sum([getFinalistsByFair(sc) for sc in state_codes]),
+                'overall_diff': round(np.mean([getDiffByFair(sc) for sc in state_codes]), 1),
+                'overall_pred_diff': round(np.mean([getDiffByFair(sc, pred=True) for sc in state_codes]), 1),
+                'overall_sectors': replace_nan(list(cat_counts.keys())),
+                'overall_breakdown': replace_nan(list(cat_counts.values())),
             })
         else:
             response_data.append({
-                'fair_data' : return_values,
-                'overall_finalists' : return_values[0]['num_finalists'],
-                'overall_diff' : return_values[0]['diff'],
-                'overall_pred_diff' : return_values[0]['pred_diff'],
-                'overall_sectors' : return_values[0]['sectors'],
-                'overall_breakdown' : return_values[0]['breakdown'],
+                'fair_data': replace_nan(return_values),
+                'overall_finalists': replace_nan(return_values[0]['num_finalists']),
+                'overall_diff': replace_nan(return_values[0]['diff']),
+                'overall_pred_diff': replace_nan(return_values[0]['pred_diff']),
+                'overall_sectors': replace_nan(return_values[0]['sectors']),
+                'overall_breakdown': replace_nan(return_values[0]['breakdown']),
             })
-    
+
     return json.dumps(replace_nan(response_data))
+
+# def getFairListByCountyAndState(county: str, state: str):
+#     county, state = county.replace('+', ' '), state.replace('+', ' ')
+#     county, state = county.title(), state.title()
+#     target = None
+
+#     response_data =[]
+#     # print(a.return_fair_nodes(county=county, state=state))
+
+#     for branch in a.return_fair_nodes(county=county, state=state, pretty=False)[0]:
+#         return_values = []
+#         regional = a.return_info(branch[0])
+
+#         cat_counts = get_category_counts(df_isef, 2023, [regional.at[regional.index[0], 'Fair Name']])
+
+#         return_values.append(
+#             {
+#                 'type': 'regional',
+#                 'name': regional.at[regional.index[0], 'Fair Name'],
+#                 'code': regional.at[regional.index[0], 'Fair Code'],
+#                 'contact_name': regional.at[regional.index[0], 'Contact Person'],
+#                 'email': regional.at[regional.index[0], 'Contact Email'],
+#                 'website': regional.at[regional.index[0], 'Fair Link'],
+#                 'num_finalists': getFinalistsByFair(regional.at[regional.index[0], 'Fair Code']),
+#                 'diff': getDiffByFair(regional.at[regional.index[0], 'Fair Code']),
+#                 'pred_diff': getDiffByFair(regional.at[regional.index[0], 'Fair Code'], pred=True),
+#                 'sectors' : list(cat_counts.keys()),
+#                 'breakdown' : list(cat_counts.values())
+#             }
+#         )
+
+#         if len(branch) == 3:
+#             #regional, state, isef
+#             state = a.return_info(branch[1])
+
+#             cat_counts = get_category_counts(df_isef, 2023, [state.at[state.index[0], 'Fair Name']])
+
+#             return_values.append(
+#                 {
+#                     'type': 'state',
+#                     'name': state.at[state.index[0], 'Fair Name'],
+#                     'code': state.at[state.index[0], 'Fair Code'],
+#                     'contact_name': state.at[state.index[0], 'Contact Person'],
+#                     'email': state.at[state.index[0], 'Contact Email'],
+#                     'website': regional.at[regional.index[0], 'Fair Link'],
+#                     'num_finalists': getFinalistsByFair(state.at[state.index[0], 'Fair Code']),
+#                     'diff': getDiffByFair(state.at[state.index[0], 'Fair Code']),
+#                     'pred_diff': getDiffByFair(state.at[state.index[0], 'Fair Code'], pred=True),
+#                     'sectors' : list(cat_counts.keys()),
+#                     'breakdown' : list(cat_counts.values())
+#                 }
+#             )
+
+    
+#             state_codes = [r.get(1) for i, r in a.df[a.df['State'] == regional.at[regional.index[0], 'State']].iterrows()]
+#             cat_counts = get_category_counts(df_isef, 2023,[r.get(3) for i, r in a.df[a.df['State'] == regional.at[regional.index[0], 'State']].iterrows()])
+            
+#             response_data.append({
+#                 'fair_data' : return_values,
+#                 'overall_finalists' : sum([getFinalistsByFair(sc) for sc in state_codes]),
+#                 'overall_diff' : round(np.mean([getDiffByFair(sc) for sc in state_codes]),1),
+#                 'overall_pred_diff' : round(np.mean([getDiffByFair(sc, pred=True) for sc in state_codes]),1),
+#                 'overall_sectors' : list(cat_counts.keys()),
+#                 'overall_breakdown' : list(cat_counts.values()),
+#             })
+#         else:
+#             response_data.append({
+#                 'fair_data' : return_values,
+#                 'overall_finalists' : return_values[0]['num_finalists'],
+#                 'overall_diff' : return_values[0]['diff'],
+#                 'overall_pred_diff' : return_values[0]['pred_diff'],
+#                 'overall_sectors' : return_values[0]['sectors'],
+#                 'overall_breakdown' : return_values[0]['breakdown'],
+#             })
+    
+#     return json.dumps(replace_nan(response_data))
 
 
     # for x in a.return_fair_nodes(county=county, state=state, pretty=False):
