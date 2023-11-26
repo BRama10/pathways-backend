@@ -139,6 +139,18 @@ class Analysis:
     def return_fair_nodes(self, county: str, state: str, *args, **kwargs) -> Optional[List[FairNode]]:
         if state == 'Alaska':
           return [[['Alaska Science and Engineering Fair', 'ISEF']]]
+        if state == 'Connecticut':
+            return [[['Connecticut Science and Engineering Fair', 'ISEF']]]
+        if state == 'Vermont':
+            return[[['Vermont Science, Technology, Engineering and Mathematics Fair', 'ISEF']]]
+        if state == 'Idaho':
+            return [[['Idaho Science & Engineering Fair', 'ISEF']]]
+        if state == 'Rhode Island':
+            return [[['Rhode Island Science and Engineering Fair', 'ISEF']]]
+        if state == 'New Hampshire':
+            return [[['New Hampshire Science & Engineering Expo', 'ISEF']]]
+        if state == 'Maine':
+            return [[['Maine State Science Fair', 'ISEF']]]
         trees = []
         # k_nodes = [[row['Fair Name'], row['Fair Code'], row['Qualifies For']] for index, row in self.df[self.df['Locations'].apply(
         #     lambda lst: any(sub.split(' ')[0] in county for sub in lst)) & (self.df['State'] == state) & (self.df['Fair Type'] == 'Regional')].iterrows()]
