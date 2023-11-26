@@ -246,6 +246,21 @@ def getDiffByFair(fair_name, pred=False):
 # def getFinalistsByFair(fair_name):
 #     return json.dumps(eval(list(a.return_info(fair_name).to_dict().get('data_2023').values())[0])[2])
 
+def replace_nan(data):
+    lst = []
+    var = data[0]['fair_data']
+    for v in range(len(var)):
+      for k, i in var[v].items():
+        if type(i) != list:
+          if pd.isna(i):
+            lst.append([v, k, i])
+    print(lst)
+    for l, m, n in lst:
+      print(data[0]['fair_data'][l][m])
+      data[0]['fair_data'][l][m] = "No Data"
+      print(data[0]['fair_data'][l][m])
+    return data
+
 
 @app.route('/get_fair_list/<county>/<state>/')
 def getFairListByCountyAndState(county: str, state: str):
@@ -322,7 +337,7 @@ def getFairListByCountyAndState(county: str, state: str):
                 'overall_breakdown' : return_values[0]['breakdown'],
             })
     
-    return json.dumps(response_data)
+    return json.dumps(replace_nan(response_data))
 
 
     # for x in a.return_fair_nodes(county=county, state=state, pretty=False):
