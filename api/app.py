@@ -31,18 +31,32 @@ class FairNode:
         self.linked = linked if linked is not None else []
         self.parent = parent
 
-        if linked_codes:
-            self._build(list(map(str.strip, linked_codes)))
+        try:
+          _ = '__' + linked_codes
+
+          if linked_codes:
+              self._build(list(map(str.strip, linked_codes)))
+        except:
+          linked_codes = []
+        
 
     def _build(self, codes: List[str]) -> None:
+        global flag_list
+        print(codes)
         for code in codes:
             if code == 'ISEF':
                 self.linked.append(ISEFnode)
             else:
+              try:
                 _, row = [
                     (i, r) for i, r in self.parent.df[self.parent.df['Fair Code'] == code].iterrows()][0]
                 self.linked.append(FairNode(
                     self.parent, row['Fair Name'], row['Fair Code'], linked_codes=row['Qualifies For']))
+              except Exception as e:
+                print(e)
+                if not code in flag_list:
+                  flag_list.append(code)
+                raise BaseException
 
     def gen_tree(self, path=None, reset=False) -> None:
         if reset:
@@ -176,19 +190,20 @@ def get_category_counts(df, year, fairs):
 
 df_isef = pd.read_csv(dir+'/isef_database_cleaned.csv')
 
-# def isExisting(string):
-#         try:
-#             c, s = map(str.strip, string.split(','))
-#             var = a.return_fair_nodes(c, s)
-#             return bool(var)
-#         except Exception as e:
-#             # print(f"Error processing {string}: {str(e)}")
-#             return False
+def isExisting(string):
+        try:
+            c, s = map(str.strip, string.split(','))
+            var = a.return_fair_nodes(c, s)
+            return bool(var)
+        except Exception as e:
+            print(f"Error processing {string}: {str(e)}")
+            return False
 
 a = Analysis()
 
-# county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
-# county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
+# print(isExisting('Adams, Illinois'))
+county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
+county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
 # print(county_data)
 
 app = Flask(__name__)
@@ -208,26 +223,26 @@ def index():
 
 
 # print(isExisting('Fairfax County, Virginia'))
-# print(isExisting('Cow, Texas'))
+
 
 @app.route('/get_county_names')
 def getCountyList():
     # return json.dumps(list(county_data['Unnamed: 0'].unique()))
 
     # for item in list(county_data['Unnamed: 0'].unique()):
-    # for item in county_data:
-    #     county, state = item.split(", ")
-    #     state = state.strip()
+    for item in county_data:
+        county, state = item.split(", ")
+        state = state.strip()
 
-    #     if state not in county_dict:
-    #         county_dict[state] = []
+        if state not in county_dict:
+            county_dict[state] = []
 
-    #     county_dict[state].append(county)
-
-    with open(f'{dir}/data.pkl', 'rb') as file:
-        loaded_data = pickle.load(file)
-
-    return json.dumps(loaded_data)
+        county_dict[state].append(county)
+#loaded_data = 
+    with open(f'{dir}/data.pkl', 'wb') as file:
+        pickle.dump(county_data, file)
+    return 'L'
+    # return json.dumps(loaded_data)
 # @app.route('/finalists_fairs/<fair_name>/')
 
 
