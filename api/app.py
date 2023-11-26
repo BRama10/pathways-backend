@@ -286,13 +286,17 @@ def getFairListByCountyAndState(county: str, state: str):
     for branch in a.return_fair_nodes(county=county, state=state, pretty=False)[0]:
         return_values = []
         regional = a.return_info(branch[0])
+        if 'ISEF' in regional['Qualifies For'][regional['Qualifies For'].index[0]]:
+            code = replace_nan(regional.at[regional.index[0], 'Fair Code'])
+        else:
+            code = 'N/A'
 
         cat_counts = get_category_counts(df_isef, 2023, [regional.at[regional.index[0], 'Fair Name']])
 
         return_values.append({
             'type': 'regional',
             'name': replace_nan(regional.at[regional.index[0], 'Fair Name']),
-            'code': replace_nan(regional.at[regional.index[0], 'Fair Code']),
+            'code': code,
             'contact_name': replace_nan(regional.at[regional.index[0], 'Contact Person']),
             'email': replace_nan(regional.at[regional.index[0], 'Contact Email']),
             'website': replace_nan(regional.at[regional.index[0], 'Fair Link']),
