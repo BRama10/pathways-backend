@@ -265,7 +265,7 @@ def getCountyList():
     with open(f'{dir}/data.pkl', 'rb') as file:
         loaded_data = pickle.load(file)
     return json.dumps(loaded_data)
-    # return json.dumps('L')
+    # return json.dumps(county_dict)
 # @app.route('/finalists_fairs/<fair_name>/')
 
 
