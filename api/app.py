@@ -26,19 +26,19 @@ class FairNode:
         return [delim.join(branch) for branch in FairNode.tree_list] if pretty else [branch for branch in FairNode.tree_list]
 
     def __init__(self, parent: Optional[Analysis], name: str, code: str, linked: Optional[List[FairNode]] = None, linked_codes: Optional[List[str]] = None) -> None:
+        print(name)
         self.name = name
         self.code = code
         self.linked = linked if linked is not None else []
         self.parent = parent
 
-        try:
-          _ = '__' + linked_codes
-
-          if linked_codes:
-              self._build(list(map(str.strip, linked_codes)))
-        except:
-          linked_codes = []
         
+
+        if linked_codes:
+          try:
+            self._build(list(map(str.strip, linked_codes)))
+          except:
+            self.linked = []
 
     def _build(self, codes: List[str]) -> None:
         global flag_list
