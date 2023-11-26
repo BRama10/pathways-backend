@@ -26,7 +26,7 @@ class FairNode:
         return [delim.join(branch) for branch in FairNode.tree_list] if pretty else [branch for branch in FairNode.tree_list]
 
     def __init__(self, parent: Optional[Analysis], name: str, code: str, linked: Optional[List[FairNode]] = None, linked_codes: Optional[List[str]] = None) -> None:
-        print(name)
+        # print(name)
         self.name = name
         self.code = code
         self.linked = linked if linked is not None else []
@@ -42,7 +42,7 @@ class FairNode:
 
     def _build(self, codes: List[str]) -> None:
         global flag_list
-        print(codes)
+        # print(codes)
         for code in codes:
             if code == 'ISEF':
                 self.linked.append(ISEFnode)
@@ -53,7 +53,7 @@ class FairNode:
                 self.linked.append(FairNode(
                     self.parent, row['Fair Name'], row['Fair Code'], linked_codes=row['Qualifies For']))
               except Exception as e:
-                print(e)
+                # print(e)
                 if not code in flag_list:
                   flag_list.append(code)
                 raise BaseException
@@ -137,7 +137,12 @@ class Analysis:
         return f
 
     def return_fair_nodes(self, county: str, state: str, *args, **kwargs) -> Optional[List[FairNode]]:
+        if state == 'Alaska':
+          return [[['Alaska Science and Engineering Fair', 'ISEF']]]
         trees = []
+        # k_nodes = [[row['Fair Name'], row['Fair Code'], row['Qualifies For']] for index, row in self.df[self.df['Locations'].apply(
+        #     lambda lst: any(sub.split(' ')[0] in county for sub in lst)) & (self.df['State'] == state) & (self.df['Fair Type'] == 'Regional')].iterrows()]
+        # print(k_nodes)
         s_nodes = [FairNode(self, row['Fair Name'], row['Fair Code'], linked_codes=row['Qualifies For']) for index, row in self.df[self.df['Locations'].apply(
             lambda lst: any(sub.split(' ')[0] in county for sub in lst)) & (self.df['State'] == state) & (self.df['Fair Type'] == 'Regional')].iterrows()]
         # print(s_nodes)
@@ -193,7 +198,11 @@ df_isef = pd.read_csv(dir+'/isef_database_cleaned.csv')
 def isExisting(string):
         try:
             c, s = map(str.strip, string.split(','))
+            # if s =='Alaska':
+                # print(c, s)
             var = a.return_fair_nodes(c, s)
+            # if s =='Alaska':
+                # print(var)
             return bool(var)
         except Exception as e:
             print(f"Error processing {string}: {str(e)}")
@@ -201,9 +210,9 @@ def isExisting(string):
 
 a = Analysis()
 
-# print(isExisting('Adams, Illinois'))
-# county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
-# county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
+print(isExisting('Dillingham Census Area, Alaska'))
+county_data, county_dict = pd.read_csv(dir+'/population_metric.csv'), {}
+county_data = list(filter(isExisting, county_data['Unnamed: 0'].unique()))
 # print(county_data)
 
 app = Flask(__name__)
@@ -268,15 +277,15 @@ def replace_nan(data):
     var = data[0]['fair_data']
     for v in range(len(var)):
       for k, i in var[v].items():
-        print(i)
+        # print(i)
         if type(i) != list:
           if pd.isna(i):
             lst.append([v, k, i])
-    print(lst)
+    # print(lst)
     for l, m, n in lst:
-      print(data[0]['fair_data'][l][m])
+    #   print(data[0]['fair_data'][l][m])
       data[0]['fair_data'][l][m] = "No Data"
-      print(data[0]['fair_data'][l][m])
+    #   print(data[0]['fair_data'][l][m])
     return data
 
 
@@ -301,6 +310,7 @@ def getFairListByCountyAndState(county: str, state: str):
     response_data = []
 
     for branch in a.return_fair_nodes(county=county, state=state, pretty=False)[0]:
+        # print(branch)
         return_values = []
         regional = a.return_info(branch[0])
         if 'ISEF' in regional['Qualifies For'][regional['Qualifies For'].index[0]]:
@@ -324,7 +334,7 @@ def getFairListByCountyAndState(county: str, state: str):
             'breakdown': replace_nan(list(cat_counts.values()))
         })
 
-        if len(branch) == 3:
+        if (len(branch) == 3 and branch[-1] == 'ISEF') or (len(branch) == 2 and branch[-1] != 'ISEF'):
             state = a.return_info(branch[1])
 
             cat_counts = get_category_counts(df_isef, 2023, [state.at[state.index[0], 'Fair Name']])
